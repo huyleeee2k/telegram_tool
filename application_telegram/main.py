@@ -51,37 +51,21 @@ def initUI():
             window, text="Lay danh sach nhom", bg="#ff3300", command=lambda: getListGroups())
         btnGetListGroups.pack(pady=20)
 
-        # btnTest = tkinter.Button(window, text="Nhan de test", command=lambda: test())
-        # btnTest.place(x=400, y=400)
-        # inputTest = Text(window, height=1.5, width=20, bg="light yellow")
-        # inputTest.place(x=400, y=450)
-
-        g2 = tkinter.Label(text="Nhap id group nhan: ")
-        g2.place(x=500, y=480)
-        inputtxt_group1 = Text(window, height=1.5, width=20, bg="light yellow")
-        inputtxt_group1.place(x=500, y=500)
+        g2 = tkinter.Label(text="Group nhan: ")
+        g2.place(x=450, y=480)
 
         g3 = tkinter.Label(text="Nhap so luong thanh vien toi da can add: ")
-        g3.place(x=500, y=550)
+        g3.place(x=450, y=550)
         inputtxt_numMember = Text(
             window, height=1.5, width=20, bg="light yellow")
-        inputtxt_numMember.place(x=500, y=570)
-
-        # g4 = tkinter.Label(text="Nhap thoi gian cho: ")
-        # g4.place(x=500, y=630)
-        # inputtxt_timeWait = Text(
-        #     window, height=1.5, width=5, bg="light yellow")
-        # inputtxt_timeWait.place(x=500, y=652)
-        #
-        # g5 = tkinter.Label(text="giây")
-        # g5.place(x=550, y=660)
+        inputtxt_numMember.place(x=450, y=570)
 
         btnChangeMembers = tkinter.Button(
             window, text="Chuyen members", bg="#009999", command=lambda: addMemberToGroup())
-        btnChangeMembers.place(x=500, y=630)
+        btnChangeMembers.place(x=450, y=630)
 
         g0 = tkinter.Label(text="Chọn Group: ")
-        g0.place(x=100, y=480)
+        g0.place(x=50, y=480)
 
         n = tkinter.StringVar()
         m_cbbNameGroup = ttk.Combobox(window, width=25, textvariable=n, height=100)
@@ -89,19 +73,25 @@ def initUI():
             m_cbbNameGroup["values"] = lstValueCbb
         else:
             m_cbbNameGroup["values"] = 'Chua khoi tao'
-        m_cbbNameGroup.current()
-        m_cbbNameGroup.place(x=180, y=480)
+        m_cbbNameGroup.place(x=130, y=480)
+
+        m_cbbNameGroup2 = ttk.Combobox(window, width=25, height=100)
+        if len(lstValueCbb) > 0:
+            m_cbbNameGroup2["value"] = lstValueCbb
+        else:
+            m_cbbNameGroup2["value"] = 'Chua khoi tao'
+        m_cbbNameGroup2.place(x=540, y=480)
 
         m_btnRefresh = tkinter.Button(window, text="Refresh", bg="red", command=lambda: initComboBox())
-        m_btnRefresh.place(x=365, y=480)
+        m_btnRefresh.place(x=335, y=480)
 
         btnAddMembers = tkinter.Button(
             window, text="Add member vao file", bg="#009999", command=lambda: addMemberToFile())
-        btnAddMembers.place(x=100, y=550)
+        btnAddMembers.place(x=50, y=550)
 
         g0 = tkinter.Label(
             text="Chu y add members vao file truoc khi chuyen members", bg="RED")
-        g0.place(x=100, y=600)
+        g0.place(x=50, y=600)
 
     # def test():
     #
@@ -183,6 +173,8 @@ def initUI():
         if len(lstValueCbb) > 0:
             m_cbbNameGroup["values"] = lstValueCbb
             m_cbbNameGroup.current(0)
+            m_cbbNameGroup2["value"] = lstValueCbb
+            m_cbbNameGroup2.current(0)
         else:
             mess.showinfo(
                 "Thong bao", "Chưa khởi tạo")
@@ -244,101 +236,107 @@ def initUI():
                             else:
                                 last_name = ""
                             name = (first_name + ' ' + last_name).strip()
-                            writer.writerow([username, user.id, user.access_hash, name, target_group.title, target_group.id,
-                                             user.phone])
+                            writer.writerow(
+                                [username, user.id, user.access_hash, name, target_group.title, target_group.id,
+                                 user.phone])
                     print('Them member vao nhom thanh coong.')
         else:
             mess.showinfo("Thong bao", "Chua lay danh sach nhom")
 
     def addMemberToGroup():
-        id_group1 = inputtxt_group1.get("1.0", "end-1c")
-        index = getIndexList(id_group1)
-        numberMember = inputtxt_numMember.get("1.0", "end-1c")
-
-        if index == -1:
-            mess.showinfo("Thong bao", "ID nhom ko hop le, vui long thu lai")
+        valueCbb1 = m_cbbNameGroup.get()
+        valueCbb2 = m_cbbNameGroup2.get()
+        if valueCbb1 == valueCbb2:
+            mess.showinfo("Thong bao", "Hai nhom khong duoc trung")
         else:
-            if numberMember is None or numberMember == "":
-                mess.showinfo("Thong bao", "Chua nhap so luong thanh vien can add")
+            index = getIndexList(valueCbb2)
+            if index == -1:
+                mess.showinfo("Thong bao", "ID nhom ko hop le, vui long thu lai")
             else:
-                numberMember = int(numberMember)
-                users = []
-                with open("members.csv", encoding='UTF-8') as f:
-                    rows = csv.reader(f, delimiter=",", lineterminator="\n")
-                    next(rows, None)
-                    for row in rows:
-                        user = {}
-                        user['username'] = row[0]
+                numberMember = inputtxt_numMember.get("1.0", "end-1c")
+                if numberMember is None or numberMember == "":
+                    mess.showinfo("Thong bao", "Chua nhap so luong thanh vien can add")
+                else:
+                    numberMember = int(numberMember)
+                    users = []
+                    with open("members.csv", encoding='UTF-8') as f:
+                        rows = csv.reader(f, delimiter=",", lineterminator="\n")
+                        next(rows, None)
+                        for row in rows:
+                            user = {}
+                            user['username'] = row[0]
+                            try:
+                                user['id'] = int(row[1])
+                                user['access_hash'] = int(row[2])
+                            except IndexError:
+                                print('users without id or access_hash')
+                            users.append(user)
+
+                    # random.shuffle(users)
+                    chats = []
+                    last_date = None
+                    chunk_size = 10
+                    groups = []
+
+                    result = client(GetDialogsRequest(
+                        offset_date=last_date,
+                        offset_id=0,
+                        offset_peer=InputPeerEmpty(),
+                        limit=chunk_size,
+                        hash=0
+                    ))
+                    chats.extend(result.chats)
+
+                    for chat in chats:
                         try:
-                            user['id'] = int(row[1])
-                            user['access_hash'] = int(row[2])
-                        except IndexError:
-                            print('users without id or access_hash')
-                        users.append(user)
+                            if chat.megagroup:  # CONDITION TO ONLY LIST MEGA GROUPS.
+                                groups.append(chat)
+                        except:
+                            continue
 
-                # random.shuffle(users)
-                chats = []
-                last_date = None
-                chunk_size = 10
-                groups = []
+                    target_group = groups[int(index)]
+                    print("Ban dang chon group: " + target_group.title)
 
-                result = client(GetDialogsRequest(
-                    offset_date=last_date,
-                    offset_id=0,
-                    offset_peer=InputPeerEmpty(),
-                    limit=chunk_size,
-                    hash=0
-                ))
-                chats.extend(result.chats)
+                    target_group_entity = InputPeerChannel(target_group.id, target_group.access_hash)
 
-                for chat in chats:
-                    try:
-                        if chat.megagroup:  # CONDITION TO ONLY LIST MEGA GROUPS.
-                            groups.append(chat)
-                    except:
-                        continue
+                    error_count = 0
+                    count = 0
 
-                target_group = groups[int(index)]
-                print("Ban dang chon group: " + target_group.title)
-
-                target_group_entity = InputPeerChannel(target_group.id, target_group.access_hash)
-
-                error_count = 0
-                count = 0
-
-                for user in users:
-                    try:
-                        print("Adding {}".format(user['username']))
-                        if user['username'] == "":
-                            user_to_add = InputPeerUser(user['id'], user['access_hash'])
-                        else:
-                            user_to_add = client.get_input_entity(user['username'])
+                    for user in users:
                         try:
-                            res = client(InviteToChannelRequest(target_group_entity, [user_to_add]))
-                            if res is not None:
+                            print("Adding {}".format(user['username']))
+                            if user['username'] == "":
+                                user_to_add = InputPeerUser(user['id'], user['access_hash'])
                                 count = count + 1
-                                if count == numberMember:
-                                    mess.showinfo("Thong bao", "Da add du " + str(numberMember) + " nguoi")
-                                    sys.exit('Stop')
+                                time.sleep(2)
+                            else:
+                                user_to_add = client.get_input_entity(user['username'])
+                                count = count + 1
+                                time.sleep(2)
+                            try:
+                                client(InviteToChannelRequest(target_group_entity, [user_to_add]))
+                                time.sleep(2)
 
-                        except Exception as e:
-                            print("spam protection: " + e.message + ": " + str(e))
+                            except Exception as e:
+                                print("spam protection: " + e.message + ": " + str(e))
 
-                        # print("Waiting 60 Seconds...")
-                        # time.sleep(60)
-                        time.sleep(2)
+                            # print("Waiting 60 Seconds...")
+                            # time.sleep(60)
+                            if count == numberMember:
+                                mess.showinfo("Thong bao", "Da add du " + str(numberMember) + " nguoi")
+                                break
 
-                    except PeerFloodError:
-                        print(error)
-                    except UserPrivacyRestrictedError:
-                        print(error)
-                    except:
-                        traceback.print_exc()
-                        print("Unexpected Error")
-                        error_count += 1
-                        if error_count > 10:
-                            sys.exit('too many errors')
-                        continue
+                        except PeerFloodError:
+                            print(error)
+                        except UserPrivacyRestrictedError:
+                            print(error)
+                        finally:
+                            traceback.print_exc()
+                            print("Unexpected Error")
+                            error_count += 1
+                            if error_count > 10:
+                                sys.exit('too many errors')
+                            continue
 
 
 client.connect()
