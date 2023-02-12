@@ -2,9 +2,9 @@ from telethon.sync import TelegramClient
 #Kết nối với telegram
 def connectClientTelegram():
     try:
-        api_id = 18812462
-        api_hash = "d9ee8054d89b7020eb90f064c1acae6a"
-        phone = "+84 354482801"
+        api_id = your_api_id
+        api_hash = your_api_hash
+        phone = your_phone
         client = TelegramClient(phone,api_id,api_hash)
         return True
     except KeyError:
